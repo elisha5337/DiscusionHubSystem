@@ -1,0 +1,129 @@
+ {% extends 'myapp/main.html' %}
+{% block content %}
+
+{% if page == 'login' %}
+<div class="login-container">
+    <div class="message-container">
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <li class="{{ message.tags }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+
+    <form action="" method="POST" class="login-form">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="username">Username:</label>
+            <input type="text" id="usr" name="username" placeholder="Enter username" required />
+        </div>
+
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="pass" name="password" placeholder="Enter password" required />
+        </div>
+
+        <input type="submit" value="Login" class="btn-submit">
+    </form>
+       <p>Haven't signed up yet?</p>
+    <a href="{% url 'register' %}">Sign up</a>
+
+</div>
+ {% else %}
+
+
+<div class="login-container">
+    <div class="message-container">
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <li class="{{ message.tags }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+
+    <form action="" method="POST" class="login-form">
+        {% csrf_token %}
+        {{ form.as_p}}
+
+        <input type="submit" value="Register" class="btn-submit">
+    </form>
+    <p>Already signed up?</p>
+    <a href="{% url 'login' %}">Login</a>
+</div>
+ {% endif %}
+<style>
+    .login-container {
+        max-width: 400px;
+        margin: 0 auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        background-color: #f9f9f9;
+    }
+
+    .message-container {
+        margin-bottom: 15px;
+    }
+
+    .messages {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    .messages li {
+        padding: 10px;
+        margin-bottom: 5px;
+        border-radius: 4px;
+    }
+
+    .messages li.success {
+        background-color: #d4edda;
+        color: #155724;
+    }
+
+    .messages li.error {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+
+    .btn-submit {
+        width: 100%;
+        padding: 10px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    .btn-submit:hover {
+        background-color: #0056b3;
+    }
+</style>
+
+{% endblock content %}

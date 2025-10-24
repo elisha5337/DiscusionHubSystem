@@ -1,0 +1,8 @@
+<div class="browse">
+        <h2>Browse Your Course</h2>
+        <div><a href="{% url 'home' %}" style="color: white;">All</a></div>
+
+        {% for topic in topics %}
+        <div><a href="{% url 'home' %}?q={{ topic.name }}" style="color: white;">{{ topic.name }}</a></div>
+        {% endfor %}
+    </div>
