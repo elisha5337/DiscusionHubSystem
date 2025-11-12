@@ -1,124 +1,52 @@
-{% extends 'myapp/main.html' %}
-
+{%  extends 'myapp/main.html'%}
 {% block content %}
-<style>
-    .container {
-        display: grid;
-        grid-template-columns: 1fr 3fr 1fr;
-        gap: 20px; /* Added gap between columns */
-        padding: 20px; /* Added padding around the container */
-    }
+     <main class="layout layout--3">
+      <div class="container">
+        <!-- Topics Start -->
+          {% include 'myapp/browse.html' %}
+        <!-- Topics End -->
 
-    .browse {
-        background-color: #555555; /* Dark background for the browse section */
-        color: white; /* Text color for visibility */
-        padding: 10px; /* Padding for content spacing */
-        border-radius: 5px; /* Rounded corners for aesthetics */
-    }
+        <!-- Room List Start -->
+        <div class="roomList">
+          <div class="mobile-menu">
+            <form action="{% url 'home' %}" method="GET" class="header__search"  >
+              <label>
+                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+                  <title>search</title>
+                  <path
+                    d="M32 30.586l-10.845-10.845c1.771-2.092 2.845-4.791 2.845-7.741 0-6.617-5.383-12-12-12s-12 5.383-12 12c0 6.617 5.383 12 12 12 2.949 0 5.649-1.074 7.741-2.845l10.845 10.845 1.414-1.414zM12 22c-5.514 0-10-4.486-10-10s4.486-10 10-10c5.514 0 10 4.486 10 10s-4.486 10-10 10z"
+                  ></path>
+                </svg>
+                <input name="q" placeholder="Search for posts" />
+              </label>
+            </form>
+            <div class="mobile-menuItems">
+              <a class="btn btn--main btn--pill" href="{% url 'topics' %}">Browse Topics</a>
+              <a class="btn btn--main btn--pill" href="{% url 'activity' %}">Recent Activities</a>
+            </div>
+          </div>
+          <div class="roomList__header">
+            <div>
+              <h2>Study Room</h2>
+              <p>{{ room_count}} Rooms available</p>
+            </div>
+            <a class="btn btn--main" href="{% url 'create_room'  %}">
+              <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+                <title>add</title>
+                <path
+                  d="M16.943 0.943h-1.885v14.115h-14.115v1.885h14.115v14.115h1.885v-14.115h14.115v-1.885h-14.115v-14.115z"
+                ></path>
+              </svg>
+              Create Room
+            </a>
+          </div>
+            {% include 'myapp/feedback.html' %}
+         </div>
+        <!-- Room List End -->
 
-    .room-list {
-        background-color: #f9f9f9; /* Light background for contrast */
-        padding: 20px; /* Padding for room list */
-        border-radius: 5px; /* Rounded corners */
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-    }
-
-    .room-item {
-        margin-bottom: 20px;
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        background-color: #fff; /* White background for room items */
-    }
-
-    .room-link {
-        text-decoration: none;
-        color: #333; /* Dark text for room titles */
-    }
-
-    .room-title {
-        margin: 0; /* Remove default margin from h2 */
-    }
-
-    .btn-create-room {
-        padding: 10px 20px;
-        background-color: #4CAF50; /* Green background for create room button */
-        color: white;
-        text-decoration: none;
-        border-radius: 5px;
-        font-size: 16px;
-    }
-
-    .btn-create-room:hover {
-        background-color: #45a049; /* Darker green on hover */
-    }
-
-    .auth-links a {
-        color: #007BFF;
-        text-decoration: none;
-        margin-right: 10px;
-    }
-
-    .auth-links a:hover {
-        text-decoration: underline; /* Underline on hover for links */
-    }
-    .recent-activity {
-        background-color: #f9f9f9; /* Light background for contrast */
-        border-radius: 8px; /* Rounded corners */
-        padding: 10px; /* Padding around the content */
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-        /* Space above the section */
-    }
-    .recent-activity h3 {
-        font-size: 1.8em; /* Larger font size for the title */
-        color: #333; /* Dark color for the title */
-        margin-bottom: 10px; /* Space below the title */
-    }
-    .activity-item {
-        border-bottom: 1px solid #eee; /* Divider between activities */
-        padding: 10px 0; /* Vertical padding for items */
-    }
-    .activity-user {
-        font-weight: bold; /* Bold for user name */
-        color: #007bff; /* Blue color for user name */
-    }
-    .activity-reply {
-        color: #555; /* Gray color for reply text */
-        margin-left: 10px; /* Space between user and reply */
-    }
-    .activity-message {
-        margin-top: 5px; /* Space above the message */
-        color: #333; /* Dark color for the message */
-    }
-    .no-activity {
-        text-align: center; /* Center align the no activity message */
-        color: #888; /* Gray color for the no activity text */
-        font-style: italic; /* Italic style for emphasis */
-    }
-</style>
-
-<div class="container">
-    <div>
-        {% include 'myapp/browse.html' %}
-    </div>
-    <div class="room-list">
-        <h1 class="page-title">List of Available Rooms</h1>
-        <h5>{{ room_count }} rooms available</h5> <!-- Fixed typo: 'availlabe' to 'available' -->
-
-        <div style="text-align: center; margin-bottom: 20px;">
-            <a href="{% url 'create_room' %}" class="btn-create-room">Create Room</a>
-        </div>
-
-       {% include 'myapp/feedback.html' %}
-    </div>
-
-    <div>
-        {% include 'myapp/recentActivity.html' %}
-    </div>
-</div>
-
-</div>
+        <!-- Activities Start -->
+          {% include 'myapp/recentActivity.html' %}
+        <!-- Activities End -->
+      </div>
+    </main>
 {% endblock content %}
-
-
-

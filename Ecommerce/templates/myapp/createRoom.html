@@ -1,75 +1,54 @@
- {% extends 'myapp/main.html' %}
-{% block content %}
+ {% include 'myapp/main.html' %}
+ {% block content %}
+ <main class="create-room layout">
+    <div class="container">
+      <div class="layout__box">
+        <div class="layout__boxHeader">
+          <div class="layout__boxTitle">
+            <a href="{% url 'home' %}">
+              <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+                <title>arrow-left</title>
+                <path
+                  d="M13.723 2.286l-13.723 13.714 13.719 13.714 1.616-1.611-10.96-10.96h27.625v-2.286h-27.625l10.965-10.965-1.616-1.607z">
+                </path>
+              </svg>
+            </a>
+            <h3>Create/Update Study Room</h3>
+          </div>
+        </div>
+        <div class="layout__body">
+          <form class="form" action=" " method="post">
+              {% csrf_token %}
 
-<div class="create-room-container">
-    <h2 class="create-room-title">Create a New Room</h2>
-    <a class="back-link" href="{{request.META.HTTP_REFERER}}">Go back</a>
-    <form method="POST" action="" class="create-room-form">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="Create Room" class="submit-button">
-    </form>
-</div>
- <style>
- .create-room-container {
-    text-align: center;
-    margin-top: 50px;
-    padding: 30px; /* Added padding for better spacing */
-    background-color: #f9f9f9; /* Light background for contrast */
-    border-radius: 10px; /* Rounded corners */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-}
+             <div class="form__group">
+              <label for="room_name">Enter a topic</label>
+                 <input type="text" name="topic" value="{{ room.topic }}" list="topic-list"  required>
+                 <datalist id="topic-list">
+                          {% for topic in topics %}
+                         <option value="{{ topic.name }}">{{ topic.name }}</option>
+                         {% endfor %}
+                  </datalist>
+              </div>
 
-.create-room-title {
-    font-size: 2em; /* Increased title size */
-    color: #333; /* Darker text color */
-    margin-bottom: 20px; /* Space below the title */
-}
+              <div class="form__group">
+              <label for="name" >Room Name</label>
+                  {{ form.name }}
+               </div>
 
-.back-link {
-    display: inline-block; /* Inline block for better spacing */
-    margin-bottom: 20px; /* Space below the link */
-    color: #007bff; /* Link color */
-    text-decoration: none; /* Remove underline */
-}
+                 <div class="form__group">
+              <label for="description">Room Description</label>
+                  {{ form.description }}
+               </div>
 
-.back-link:hover {
-    text-decoration: underline; /* Underline on hover */
-}
 
-.create-room-form {
-    display: inline-block; /* Center the form */
-    text-align: left; /* Left-align form elements */
-    padding: 20px; /* Padding around the form */
-    background-color: #ffffff; /* White background for the form */
-    border-radius: 8px; /* Rounded corners for the form */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Shadow for the form */
-}
 
-.create-room-form input[type="text"],
-.create-room-form input[type="email"],
-.create-room-form input[type="password"],
-.create-room-form textarea {
-    width: 100%; /* Full width inputs */
-    padding: 10px; /* Padding inside inputs */
-    margin: 10px 0; /* Margin between inputs */
-    border: 1px solid #ccc; /* Light border */
-    border-radius: 5px; /* Rounded corners for inputs */
-    font-size: 1em; /* Font size for inputs */
-}
-
-.create-room-form input[type="submit"] {
-    background-color: #007bff; /* Button color */
-    color: white; /* Button text color */
-    border: none; /* No border */
-    padding: 10px 20px; /* Padding around the button */
-    border-radius: 5px; /* Rounded corners for the button */
-    cursor: pointer; /* Pointer cursor on hover */
-    font-size: 1em; /* Button font size */
-}
-
-.create-room-form input[type="submit"]:hover {
-    background-color: #0056b3; /* Darker blue on hover */
-}
-</style>
-{% endblock content %}
+             <div class="form__action">
+              <a class="btn btn--dark" href="{% url 'home' %}">Cancel</a>
+              <button class="btn btn--main" type="submit">Submit   </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+ {% endblock content %}

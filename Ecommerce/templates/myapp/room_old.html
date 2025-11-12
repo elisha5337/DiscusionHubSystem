@@ -1,0 +1,142 @@
+       <h3 class="conversation-title">Conversation</h3>
+      <hr class="divider">
+     {% for message in room_messages %}
+    <div class="message">
+        {% if  request.user == message.user %}
+        <a href="{% url 'delete_message' message.id %}">Delete</a>
+        {% endif %}
+        <h3 class="message-user">@{{ message.user }} <span class="message-time">{{ message.created_at|timesince }} ago</span></h3>
+        <p class="message-body">{{ message.body }}</p>
+    </div>
+{% empty %}
+    <div class="no-messages">
+        <small>No messages yet.</small>
+    </div>
+{% endfor %}
+
+
+    {% if request.user.is_authenticated %}
+    <div class="message-form">
+        <form action="" method="POST">
+            {% csrf_token %}
+            <input type="text" placeholder="Type your message here..." name="body" class="message-input" required>
+            <input type="submit" value="Send" class="send-button">
+        </form>
+    </div>
+    {% endif %}
+    </div>
+     </div>
+     <div class="participants">
+         <h3>Participants</h3>
+         {% for participant in participants %}
+         <div class="participant">
+             <p>@{{ participant.username }}</p>
+         </div>
+         {% endfor %}
+
+     </div>
+</div>
+<style>
+    .container{
+        display:grid;
+        grid-template-columns: 3fr 1fr;
+    }
+    .participants{
+        text-align: center;
+                background-color: #cccccc;
+
+    }
+.room-title {
+    font-size: 2.5em; /* Increased font size for emphasis */
+    color: #333;
+    margin-bottom: 15px; /* Increased margin for better spacing */
+    text-align: center; /* Center-align the title */
+}
+
+.room-description {
+    font-size: 1.2em;
+    color: #666;
+    margin-bottom: 30px; /* Increased margin for better spacing */
+    text-align: center; /* Center-align the description */
+}
+
+.conversation-container {
+    background-color: white; /* Changed to white for contrast */
+    border-radius: 10px; /* Increased border radius for a softer look */
+    padding: 20px; /* Increased padding for more space */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Enhanced shadow for depth */
+    margin: 0 auto; /* Center the container */
+    max-width: 800px; /* Set a max width for better layout */
+}
+
+.conversation-title {
+    font-size: 1.8em; /* Increased font size */
+    color: #444;
+    margin-bottom: 15px; /* Added margin for separation */
+}
+
+.divider {
+    border: 1px solid #ddd;
+    margin: 20px 0; /* Increased margin for better spacing */
+}
+
+.message {
+    border-bottom: 1px solid #eee;
+    padding: 15px 0; /* Added vertical padding */
+}
+
+.message-user {
+    font-weight: bold;
+    color: #007bff;
+    margin-bottom: 5px; /* Added margin for separation from body */
+}
+
+.message-time {
+    font-size: 0.9em;
+    color: #999;
+    margin-left: 10px; /* Added margin for spacing */
+}
+
+.message-body {
+    margin-top: 5px;
+    font-size: 1em;
+    color: #333;
+    line-height: 1.5; /* Improved line height for readability */
+}
+
+.no-messages {
+    text-align: center;
+    color: #888;
+    font-style: italic;
+    padding: 20px 0; /* Added padding for better spacing */
+}
+
+.message-form {
+    margin-top: 20px; /* Space above the form */
+    text-align: center; /* Center-align the form */
+}
+
+.message-input {
+    width: 70%; /* Width of the input field */
+    padding: 10px; /* Padding inside the input */
+    border: 1px solid #ccc; /* Border for the input */
+    border-radius: 5px; /* Rounded corners */
+    font-size: 1em; /* Font size for input */
+}
+
+.send-button {
+    padding: 10px 15px; /* Padding for the button */
+    margin-left: 10px; /* Space between input and button */
+    background-color: #007bff; /* Button color */
+    color: white; /* Button text color */
+    border: none; /* No border */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    font-size: 1em; /* Font size for button */
+}
+
+.send-button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+</style>
+{% endblock %}

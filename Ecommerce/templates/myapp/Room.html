@@ -1,149 +1,162 @@
  {% extends 'myapp/main.html' %}
 {% block content %}
- <div class="container">
-     <div>
-       <h1 class="room-title">{{ room.name }}</h1>
-       <p class="room-description">{{ room.description }}</p>
-       <div class="conversation-container">
-       <h3 class="conversation-title">Conversation</h3>
-      <hr class="divider">
-     {% for message in room_messages %}
-    <div class="message">
-        {% if  request.user == message.user %}
-        <a href="{% url 'delete_message' message.id %}">Delete</a>
-        {% endif %}
-        <h3 class="message-user">@{{ message.user }} <span class="message-time">{{ message.created_at|timesince }} ago</span></h3>
-        <p class="message-body">{{ message.body }}</p>
-    </div>
-{% empty %}
-    <div class="no-messages">
-        <small>No messages yet.</small>
-    </div>
-{% endfor %}
+    <main class="profile-page layout layout--2">
+      <div class="container">
+        <!-- Room Start -->
+        <div class="room">
+          <div class="room__top">
+            <div class="room__topLeft">
+              <a href="{% url 'home' %}">
+                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+                  <title>arrow-left</title>
+                  <path
+                    d="M13.723 2.286l-13.723 13.714 13.719 13.714 1.616-1.611-10.96-10.96h27.625v-2.286h-27.625l10.965-10.965-1.616-1.607z"
+                  ></path>
+                </svg>
+              </a>
+              <h3>Study Room</h3>
+            </div>
 
+            <div class="room__topRight">
+                {% if room.host == request.user%}
+              <a href="{% url 'update_room' room.id %}">
+                <svg
+                  enable-background="new 0 0 24 24"
+                  height="32"
+                  viewBox="0 0 24 24"
+                  width="32"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <title>edit</title>
+                  <g>
+                    <path d="m23.5 22h-15c-.276 0-.5-.224-.5-.5s.224-.5.5-.5h15c.276 0 .5.224.5.5s-.224.5-.5.5z" />
+                  </g>
+                  <g>
+                    <g>
+                      <path
+                        d="m2.5 22c-.131 0-.259-.052-.354-.146-.123-.123-.173-.3-.133-.468l1.09-4.625c.021-.09.067-.173.133-.239l14.143-14.143c.565-.566 1.554-.566 2.121 0l2.121 2.121c.283.283.439.66.439 1.061s-.156.778-.439 1.061l-14.142 14.141c-.065.066-.148.112-.239.133l-4.625 1.09c-.038.01-.077.014-.115.014zm1.544-4.873-.872 3.7 3.7-.872 14.042-14.041c.095-.095.146-.22.146-.354 0-.133-.052-.259-.146-.354l-2.121-2.121c-.19-.189-.518-.189-.707 0zm3.081 3.283h.01z"
+                      />
+                    </g>
+                    <g>
+                      <path
+                        d="m17.889 10.146c-.128 0-.256-.049-.354-.146l-3.535-3.536c-.195-.195-.195-.512 0-.707s.512-.195.707 0l3.536 3.536c.195.195.195.512 0 .707-.098.098-.226.146-.354.146z"
+                      />
+                    </g>
+                  </g>
+                </svg>
+              </a>
+              <a href="{% url 'delete_room' room.id %}">
+                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+                  <title>remove</title>
+                  <path
+                    d="M27.314 6.019l-1.333-1.333-9.98 9.981-9.981-9.981-1.333 1.333 9.981 9.981-9.981 9.98 1.333 1.333 9.981-9.98 9.98 9.98 1.333-1.333-9.98-9.98 9.98-9.981z"
+                  ></path>
+                </svg>
+              </a>
+                {% endif %}
+            </div>
 
-    {% if request.user.is_authenticated %}
-    <div class="message-form">
-        <form action="" method="POST">
-            {% csrf_token %}
-            <input type="text" placeholder="Type your message here..." name="body" class="message-input" required>
-            <input type="submit" value="Send" class="send-button">
-        </form>
-    </div>
-    {% endif %}
-    </div>
-     </div>
-     <div class="participants">
-         <h3>Participants</h3>
-         {% for participant in participants %}
-         <div class="participant">
-             <p>@{{ participant.username }}</p>
-         </div>
-         {% endfor %}
+            <!-- <button class="action-button" data-id="120" data-delete-url="https://randomuser.me/api/3324923"
+            data-edit-url="profile.html">
+            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+              <title>ellipsis-horizontal</title>
+              <path
+                d="M16 7.843c-2.156 0-3.908-1.753-3.908-3.908s1.753-3.908 3.908-3.908c2.156 0 3.908 1.753 3.908 3.908s-1.753 3.908-3.908 3.908zM16 1.98c-1.077 0-1.954 0.877-1.954 1.954s0.877 1.954 1.954 1.954c1.077 0 1.954-0.877 1.954-1.954s-0.877-1.954-1.954-1.954z">
+              </path>
+              <path
+                d="M16 19.908c-2.156 0-3.908-1.753-3.908-3.908s1.753-3.908 3.908-3.908c2.156 0 3.908 1.753 3.908 3.908s-1.753 3.908-3.908 3.908zM16 14.046c-1.077 0-1.954 0.877-1.954 1.954s0.877 1.954 1.954 1.954c1.077 0 1.954-0.877 1.954-1.954s-0.877-1.954-1.954-1.954z">
+              </path>
+              <path
+                d="M16 31.974c-2.156 0-3.908-1.753-3.908-3.908s1.753-3.908 3.908-3.908c2.156 0 3.908 1.753 3.908 3.908s-1.753 3.908-3.908 3.908zM16 26.111c-1.077 0-1.954 0.877-1.954 1.954s0.877 1.954 1.954 1.954c1.077 0 1.954-0.877 1.954-1.954s-0.877-1.954-1.954-1.954z">
+              </path>
+            </svg>
+          </button> -->
+          </div>
+          <div class="room__box scroll">
+            <div class="room__header scroll">
+              <div class="room__info">
+                <h3>{{ room.name}}</h3>
+                <span>{{ room.created_at|timesince}} ago</span>
+              </div>
+              <div class="room__hosted">
+                <p>Hosted By</p>
+                <a href="{% url 'profile' room.host.id%}" class="room__author">
+                  <div class="avatar avatar--small">
+                    <img src="{{ room.host.avatar.url }}" />
+                  </div>
+                  <span>@{{ room.host.username }}</span>
+                </a>
+              </div>
+              <div class="room__details">
+                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quasi, tenetur laudantium? Dicta repellendus
+                rerum consectetur, voluptatem repudiandae eum ea porro cupiditate provident nulla, deserunt, ab ipsum
+                corporis laboriosam deleniti molestias?
+              </div>
+              <span class="room__topics">JavaScript</span>
+            </div>
+            <div class="room__conversation">
+              <div class="threads scroll">
+                  {% for message in room_messages %}
+                <div class="thread">
+                  <div class="thread__top">
+                    <div class="thread__author">
+                      <a href="{% url 'profile' message.user.id %}" class="thread__authorInfo">
+                        <div class="avatar avatar--small">
+                          <img src="{{ message.user.avatar.url}}" />
+                        </div>
+                        <span>@{{ message.user.username }}</span>
+                      </a>
+                      <span class="thread__date">{{ message.created_at|timesince}}ago</span>
+                    </div>
+                      {% if request.user == message.user %}
+                      <a href="{% url 'delete_message' message.id %}">
+                    <div class="thread__delete">
+                      <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+                        <title>remove</title>
+                        <path
+                          d="M27.314 6.019l-1.333-1.333-9.98 9.981-9.981-9.981-1.333 1.333 9.981 9.981-9.981 9.98 1.333 1.333 9.981-9.98 9.98 9.98 1.333-1.333-9.98-9.98 9.98-9.981z"
+                        ></path>
+                      </svg>
+                    </div>
+                          </a>
+                      {% endif %}
+                  </div>
+                  <div class="thread__details">
+                      {{ message.body }}
+                  </div>
+                </div>
+              {% endfor %}
+              </div>
+            </div>
+          </div>
+          <div class="room__message">
+            <form action="" method="POST">
+                {% csrf_token %}
+                <input name="body" placeholder="Write your message here..." /></form>
+          </div>
+        </div>
+        <!-- Room End -->
 
-     </div>
-</div>
-<style>
-    .container{
-        display:grid;
-        grid-template-columns: 3fr 1fr;
-    }
-    .participants{
-        text-align: center;
-                background-color: #cccccc;
+        <!--   Start -->
+        <div class="participants">
+          <h3 class="participants__top">Participants <span>({{ participants.count}} Joined)</span></h3>
+          <div class="participants__list scroll">
+              {% for user in participants %}
+            <a href="{% url 'profile' user.id %}" class="participant">
+              <div class="avatar avatar--medium">
+                <img src="{{ user.avatar.url}}" />
+              </div>
+              <p>
+                {{ user.name }}
+                <span>@{{ user.username }}</span>
+              </p>
+            </a>
+              {% endfor %}
 
-    }
-.room-title {
-    font-size: 2.5em; /* Increased font size for emphasis */
-    color: #333;
-    margin-bottom: 15px; /* Increased margin for better spacing */
-    text-align: center; /* Center-align the title */
-}
-
-.room-description {
-    font-size: 1.2em;
-    color: #666;
-    margin-bottom: 30px; /* Increased margin for better spacing */
-    text-align: center; /* Center-align the description */
-}
-
-.conversation-container {
-    background-color: white; /* Changed to white for contrast */
-    border-radius: 10px; /* Increased border radius for a softer look */
-    padding: 20px; /* Increased padding for more space */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Enhanced shadow for depth */
-    margin: 0 auto; /* Center the container */
-    max-width: 800px; /* Set a max width for better layout */
-}
-
-.conversation-title {
-    font-size: 1.8em; /* Increased font size */
-    color: #444;
-    margin-bottom: 15px; /* Added margin for separation */
-}
-
-.divider {
-    border: 1px solid #ddd;
-    margin: 20px 0; /* Increased margin for better spacing */
-}
-
-.message {
-    border-bottom: 1px solid #eee;
-    padding: 15px 0; /* Added vertical padding */
-}
-
-.message-user {
-    font-weight: bold;
-    color: #007bff;
-    margin-bottom: 5px; /* Added margin for separation from body */
-}
-
-.message-time {
-    font-size: 0.9em;
-    color: #999;
-    margin-left: 10px; /* Added margin for spacing */
-}
-
-.message-body {
-    margin-top: 5px;
-    font-size: 1em;
-    color: #333;
-    line-height: 1.5; /* Improved line height for readability */
-}
-
-.no-messages {
-    text-align: center;
-    color: #888;
-    font-style: italic;
-    padding: 20px 0; /* Added padding for better spacing */
-}
-
-.message-form {
-    margin-top: 20px; /* Space above the form */
-    text-align: center; /* Center-align the form */
-}
-
-.message-input {
-    width: 70%; /* Width of the input field */
-    padding: 10px; /* Padding inside the input */
-    border: 1px solid #ccc; /* Border for the input */
-    border-radius: 5px; /* Rounded corners */
-    font-size: 1em; /* Font size for input */
-}
-
-.send-button {
-    padding: 10px 15px; /* Padding for the button */
-    margin-left: 10px; /* Space between input and button */
-    background-color: #007bff; /* Button color */
-    color: white; /* Button text color */
-    border: none; /* No border */
-    border-radius: 5px; /* Rounded corners */
-    cursor: pointer; /* Pointer cursor on hover */
-    font-size: 1em; /* Font size for button */
-}
-
-.send-button:hover {
-    background-color: #0056b3; /* Darker blue on hover */
-}
-</style>
-{% endblock %}
+          </div>
+        </div>
+        <!--  End -->
+      </div>
+    </main>
+    <script src="script.js"></script>
+    {% endblock %}

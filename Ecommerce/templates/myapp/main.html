@@ -1,54 +1,40 @@
- <!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Ecommerce</title>
-    <style>
-    .page-title {
-        text-align: center;
-        color: #333;
-        margin-bottom: 20px;
-        font-size: 2.5em;
-    }
+{% load static %}
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" href="assets/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="{%  static 'styles/style.css' %}" />
+    <title>StudyBuddy - Find study partners around the world!</title>
+  </head>
 
-    .room-list {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 15px; /* Space between room items */
-    }
+  <body>
+        {% include 'myapp/nabvar.html' %}
+    {% if messages  %}
+        <ul>
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+        </ul>
+        {% endif %}
 
-    .room-item {
-        background-color: #f9f9f9; /* Light background for room items */
-        border: 1px solid #ddd; /* Light border */
-        border-radius: 8px; /* Rounded corners */
-        padding: 15px; /* Padding inside each room item */
-        width: 80%; /* Set a width for room items */
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-        transition: transform 0.2s; /* Smooth scaling effect */
-    }
-
-    .room-item:hover {
-        transform: scale(1.02); /* Slightly enlarge on hover */
-    }
-
-    .room-title {
-        margin: 0;
-        color: #555; /* Darker color for room titles */
-    }
-</style>
+    {% block content %}
 
 
- </head>
-<body>
-    {% include 'myapp/nabvar.html' %}  <!-- Corrected spacing -->
+    {% endblock %}
 
-    {% block content %}  <!-- Corrected spacing -->
-
-    {% endblock %}  <!-- Corrected spacing -->
-
-</body>
+    <script src="{% static 'js/script.js' %}"></script>
+  </body>
 </html>
+
+
+
+
+
+
+
+
+
+

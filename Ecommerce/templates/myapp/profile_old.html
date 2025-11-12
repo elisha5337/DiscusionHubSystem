@@ -1,0 +1,22 @@
+{% extends 'myapp/main.html' %}
+
+{% block content %}
+<h1>{{user.username}}</h1>
+<div class="container">
+    <div>
+        {% include 'myapp/browse.html' %}
+    </div>
+    <div>
+        {% include 'myapp/feedback.html' %}
+    </div>
+    <div>
+        {% include 'myapp/recentActivity.html' %}
+    </div>
+</div>
+<style>
+    .container {
+        display:grid;
+        grid-template-columns: 1fr 3fr 1fr;
+    }
+</style>
+{% endblock content %}
