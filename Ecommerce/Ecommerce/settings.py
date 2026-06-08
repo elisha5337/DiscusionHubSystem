@@ -44,7 +44,7 @@ if RENDER_EXTERNAL_HOSTNAME:
     CSRF_TRUSTED_ORIGINS.append(f"https://{RENDER_EXTERNAL_HOSTNAME}")
 
 # Fail fast: require SECRET_KEY in production
-if not DEBUG and (not os.environ.get('SECRET_KEY') or os.environ.get('SECRET_KEY') == 'unsafe-local-dev-key'):
+if not DEBUG and SECRET_KEY == 'unsafe-local-dev-key':
     raise RuntimeError('Missing required SECRET_KEY environment variable for production')
 
 
