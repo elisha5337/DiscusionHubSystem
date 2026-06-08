@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 import os
 from pathlib import Path
 
-from django.conf.global_settings import STATICFILES_DIRS
 import dj_database_url
 from dotenv import load_dotenv
 
@@ -33,10 +32,16 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'unsafe-local-dev-key')
 # Use DEBUG=False in production to enforce secure settings.
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-if DEBUG:
-    ALLOWED_HOSTS = ['localhost', '127.0.0.1']
-else:
-    ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '').split(',') if os.environ.get('ALLOWED_HOSTS') else []
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+
+# Automatically add Render's external hostname to allowed hosts
+RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+if RENDER_EXTERNAL_HOSTNAME:
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+
+CSRF_TRUSTED_ORIGINS = [f"https://{h}" for h in ALLOWED_HOSTS if h != '*']
+if RENDER_EXTERNAL_HOSTNAME:
+    CSRF_TRUSTED_ORIGINS.append(f"https://{RENDER_EXTERNAL_HOSTNAME}")
 
 # Fail fast: require SECRET_KEY in production
 if not DEBUG and (not os.environ.get('SECRET_KEY') or os.environ.get('SECRET_KEY') == 'unsafe-local-dev-key'):
@@ -154,11 +159,6 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ORIGIN_ALLOW_ALL = os.environ.get('CORS_ORIGIN_ALLOW_ALL', 'True') == 'True'
-
-
-# Fail fast: require SECRET_KEY in production
-if not DEBUG and (not os.environ.get('SECRET_KEY') or os.environ.get('SECRET_KEY') == 'unsafe-local-dev-key'):
-    raise RuntimeError('Missing required SECRET_KEY environment variable for production')
 
 # Optional: Use Amazon S3 for media storage in production
 USE_S3 = os.environ.get('USE_S3', 'False') == 'True'
