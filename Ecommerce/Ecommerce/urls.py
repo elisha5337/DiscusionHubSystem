@@ -23,7 +23,7 @@ from django.conf import settings
 
 urlpatterns = [
     path('', include('myapp.urls')),
-    path('api/', include('Ecommerce.api.urls')),
+    # path('api/', include('Ecommerce.api.urls')),
 
 ]
 
