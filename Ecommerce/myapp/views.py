@@ -14,11 +14,16 @@ def loginPage(request):
         email = request.POST.get('email')
         password = request.POST.get('password')
 
+        try:
+            user = authenticate(request, username=email, password=password)
+        except Exception as e:
+            messages.error(request, 'A server error occurred during authentication.')
+            return redirect('login')
+
         if not email or not password:
             messages.error(request, 'Please provide both email and password.')
             return redirect('login')
 
-        user = authenticate(request, username=email, password=password)
         if user is not None:
             login(request, user)
             return redirect('home')
@@ -38,7 +43,7 @@ def registerPage(request):
         if form.is_valid():
             user = form.save(commit=False)
             # normalize username and email to avoid case-sensitivity issues
-            if user.username:
+            if getattr(user, 'username', None):
                 user.username = user.username.lower()
             if getattr(user, 'email', None):
                 user.email = user.email.lower()
