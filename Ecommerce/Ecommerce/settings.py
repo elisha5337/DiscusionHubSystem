@@ -33,14 +33,14 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'unsafe-local-dev-key')
 # Use DEBUG=False in production to enforce secure settings.
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1,.onrender.com').split(',')
 
 # Automatically add Render's external hostname to allowed hosts
 RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
 if RENDER_EXTERNAL_HOSTNAME:
     ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
-CSRF_TRUSTED_ORIGINS = os.environ.get('CSRF_TRUSTED_ORIGINS', 'https://*.onrender.com').split(',')
+CSRF_TRUSTED_ORIGINS = os.environ.get('CSRF_TRUSTED_ORIGINS', 'https://*.onrender.com,https://discusionhubsystem.onrender.com').split(',')
 
 # Fail fast: require SECRET_KEY in production
 if not DEBUG and SECRET_KEY == 'unsafe-local-dev-key':
@@ -101,10 +101,14 @@ DATABASES = {
         default=os.environ.get('DATABASE_URL', f'sqlite:///{BASE_DIR / "db.sqlite3"}'),
         conn_max_age=600,
         conn_health_checks=True,
-        # Force SSL in production (Render requirement)
-        ssl_require=not DEBUG
+        # Robust SSL requirement for Render
+        ssl_require=True if not DEBUG and os.environ.get('DATABASE_URL') else False
     )
 }
+
+# Add this to handle certain Postgres configurations that require explicit SSL options
+if not DEBUG and os.environ.get('DATABASE_URL'):
+    DATABASES['default']['OPTIONS'] = {'sslmode': 'require'}
 
 
 # Password validation
@@ -156,7 +160,7 @@ STORAGES = {
         "BACKEND": "django.core.files.storage.FileSystemStorage",
     },
     "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
     },
 }
 
