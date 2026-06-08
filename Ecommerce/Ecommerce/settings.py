@@ -13,6 +13,11 @@ import os
 from pathlib import Path
 
 from django.conf.global_settings import STATICFILES_DIRS
+import dj_database_url
+from dotenv import load_dotenv
+
+# Load environment variables from .env when present
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -22,13 +27,20 @@ AUTH_USER_MODEL = 'myapp.User'  # Replace 'myapp' with the name of your app
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-xj9$p9*=@&pu543y&#9r4)!0s9mq^c338ue(%=909*)n09tbqu'
+SECRET_KEY = os.environ.get('SECRET_KEY', 'unsafe-local-dev-key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# Use DEBUG=False in production to enforce secure settings.
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = []
+if DEBUG:
+    ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+else:
+    ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '').split(',') if os.environ.get('ALLOWED_HOSTS') else []
+
+# Fail fast: require SECRET_KEY in production
+if not DEBUG and (not os.environ.get('SECRET_KEY') or os.environ.get('SECRET_KEY') == 'unsafe-local-dev-key'):
+    raise RuntimeError('Missing required SECRET_KEY environment variable for production')
 
 
 # Application definition
@@ -46,9 +58,9 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-
     "corsheaders.middleware.CorsMiddleware",
-     'django.middleware.security.SecurityMiddleware',
+    'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -81,10 +93,11 @@ WSGI_APPLICATION = 'Ecommerce.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.parse(
+        os.environ.get('DATABASE_URL', f'sqlite:///{BASE_DIR / "db.sqlite3"}'),
+        conn_max_age=600,
+        ssl_require=os.environ.get('DATABASE_SSL_REQUIRE', 'False') == 'True'
+    )
 }
 
 
@@ -130,10 +143,31 @@ MEDIA_URL='/images/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
-MEDIA_ROOT=BASE_DIR / '/static/images'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+# Use WhiteNoise storage for serving static files in production
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-CORS_ORIGIN_ALLOW_ALL=True
+CORS_ORIGIN_ALLOW_ALL = os.environ.get('CORS_ORIGIN_ALLOW_ALL', 'True') == 'True'
+
+
+# Fail fast: require SECRET_KEY in production
+if not DEBUG and (not os.environ.get('SECRET_KEY') or os.environ.get('SECRET_KEY') == 'unsafe-local-dev-key'):
+    raise RuntimeError('Missing required SECRET_KEY environment variable for production')
+
+# Optional: Use Amazon S3 for media storage in production
+USE_S3 = os.environ.get('USE_S3', 'False') == 'True'
+if USE_S3:
+    INSTALLED_APPS.append('storages')
+    AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+    AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+    AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
+    AWS_S3_REGION_NAME = os.environ.get('AWS_S3_REGION_NAME', None)
+    if not (AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY and AWS_STORAGE_BUCKET_NAME):
+        raise RuntimeError('USE_S3 is True but AWS credentials or bucket name are not set')
+    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'

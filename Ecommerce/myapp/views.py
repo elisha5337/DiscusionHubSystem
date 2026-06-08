@@ -14,7 +14,7 @@ def loginPage(request):
         email = request.POST.get('email')
         password = request.POST.get('password')
 
-        user = authenticate(request, email=email, password=password)
+        user = authenticate(request, username=email, password=password)
         if user is not None:
             login(request, user)
             return redirect('home')
@@ -27,18 +27,33 @@ def loginPage(request):
 
 
 def registerPage(request):
+    page = 'register'
     form = MyUserCreationForm()
     if request.method == 'POST':
         form = MyUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
-            user.username = user.username.lower()
+            # normalize username and email to avoid case-sensitivity issues
+            if user.username:
+                user.username = user.username.lower()
+            if getattr(user, 'email', None):
+                user.email = user.email.lower()
             user.save()
             login(request, user)
             return redirect('home')
         else:
-            messages.error(request, 'An error occurred during registration.')
-    return render(request, 'myapp/register-login.html', {'form': form})
+            # Surface form validation errors to the user
+            for field, errors in form.errors.items():
+                for err in errors:
+                    # use field name for field-specific errors, otherwise show non-field errors
+                    if field == '__all__':
+                        messages.error(request, f"Error: {err}")
+                    else:
+                        messages.error(request, f"{field}: {err}")
+            # also include non-field errors if present
+            for err in form.non_field_errors():
+                messages.error(request, f"Error: {err}")
+    return render(request, 'myapp/register-login.html', {'form': form, 'page': page})
 
 
 def logoutUser(request):

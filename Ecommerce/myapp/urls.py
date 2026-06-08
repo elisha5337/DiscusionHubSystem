@@ -2,7 +2,6 @@ from django.contrib import admin
 from django.urls import path
 from .views import rooms, django_page, home, create_room, update_room, delete_room, loginPage, logoutUser, registerPage, \
     delete_message, profile, update_user, topicsPage, activityPage
-from .views import Post  # Ensure you import the correct view function
 
 
 urlpatterns = [

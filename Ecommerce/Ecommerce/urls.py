@@ -23,8 +23,9 @@ from django.conf import settings
 
 urlpatterns = [
     path('', include('myapp.urls')),
-    path('api/',include('Ecommerce.api.urls')),
+    path('api/', include('Ecommerce.api.urls')),
 
 ]
 
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

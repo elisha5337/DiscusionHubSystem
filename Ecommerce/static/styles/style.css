@@ -2,23 +2,35 @@
 
 :root {
   --color-main: #71c6dd;
-  --color-main-light: #e1f6fb;
-  --color-dark: #3f4156;
-  --color-dark-medium: #51546e;
-  --color-dark-light: #696d97;
-  --color-light: #e5e5e5;
-  --color-gray: #8b8b8b;
-  --color-light-gray: #b2bdbd;
-  --color-bg: #2d2d39;
+  --color-main-light: #f0faff;
+  --color-main: #2563eb;
+  --color-main-light: #eef2ff;
+  --color-dark: #ffffff;
+  --color-dark-medium: #e0e0e0;
+  --color-dark-light: #f0f2f5;
+  --color-light: #333333;
+  --color-gray: #666666;
+  --color-light-gray: #444444;
+  --color-bg: #f5f7fb;
   --color-success: #5dd693;
-  --color-error: #fc4b0b;
+  --color-error: #d93025;
 }
 
 /*========== base styles ==========*/
 
 * {
-  font-family: "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans",
-    "Helvetica Neue", sans-serif;
+  font-family:
+    "DM Sans",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    "Open Sans",
+    "Helvetica Neue",
+    sans-serif;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -47,7 +59,7 @@ body {
   line-height: 1.6;
   font-weight: 400;
   font-size: 1.5rem;
-  color: var(--color-light-gray);
+  color: var(--color-light);
   background-color: var(--color-bg);
   min-height: 100vh;
 }
@@ -267,7 +279,8 @@ a {
 
 .header {
   padding: 1.5rem;
-  background-color: var(--color-dark);
+  background-color: #ffffff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }
 
 .header > .container {
@@ -290,11 +303,11 @@ a {
 .header__logo > h1 {
   font-weight: 700;
   font-size: 2rem;
-  color: var(--color-light);
+  color: var(--color-light-gray);
 }
 
 .header__search > label {
-  background-color: var(--color-dark-medium);
+  background-color: var(--color-dark-light);
   padding: 1.3rem 1rem;
   display: flex;
   align-items: center;
@@ -424,21 +437,25 @@ a {
 .layout__box {
   width: 90%;
   max-width: 48rem;
-  min-height: 40rem;
+  min-height: 32rem;
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -46%);
-  background-color: var(--color-dark);
+  transform: translate(-50%, -50%);
+  background-color: #ffffff;
   border-radius: 1rem;
-  box-shadow: 1px 1px 6px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
   overflow: hidden;
+  max-height: 80vh;
+  overflow-y: auto;
 }
 
 .layout__boxHeader {
   display: flex;
   padding: 1.5rem;
   background-color: var(--color-dark-light);
+  padding: 1.2rem 1.5rem;
+  background-color: var(--color-main-light);
 }
 
 .layout__boxTitle {
@@ -450,7 +467,7 @@ a {
 .layout__boxTitle h3 {
   text-transform: uppercase;
   font-weight: 500;
-  color: var(--color-light);
+  color: var(--color-light-gray);
 }
 
 .layout__boxTitle svg {
@@ -642,9 +659,11 @@ a {
 
 .roomListRoom {
   margin-bottom: 2.4rem;
-  background-color: var(--color-dark);
+  background-color: #ffffff;
   border-radius: 1rem;
   padding: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+  border: 1px solid var(--color-dark-medium);
 }
 
 .roomListRoom__header {
@@ -696,7 +715,7 @@ a {
 }
 
 .roomListRoom__meta {
-  border-top: 1px solid var(--color-dark-medium);
+  border-top: 1px solid var(--color-dark-light);
   padding-top: 1rem;
   display: flex;
   align-items: center;
@@ -704,7 +723,7 @@ a {
 }
 
 .roomListRoom__joined {
-  color: var(--color-light-gray);
+  color: var(--color-gray);
   display: flex;
   align-items: center;
   gap: 1rem;
@@ -721,9 +740,14 @@ a {
 .roomListRoom__topic {
   padding: 5px 1.5rem;
   background-color: var(--color-dark-medium);
+  padding: 4px 1.2rem;
+  background-color: var(--color-main-light);
+  color: var(--color-main);
   border-radius: 5rem;
   font-weight: 500;
   font-size: 1.3rem;
+  font-weight: 600;
+  font-size: 1.2rem;
 }
 
 /*==============================
@@ -731,13 +755,15 @@ a {
 ================================*/
 
 .activities {
-  background: var(--color-dark);
+  background: #ffffff;
+  border: 1px solid var(--color-dark-medium);
   border-radius: 5px;
   overflow: hidden;
 }
 
 .activities__header h2 {
   background-color: var(--color-dark-light);
+  background-color: var(--color-main-light);
   text-transform: uppercase;
   font-weight: 500;
   padding: 1rem 1.5rem;
@@ -800,6 +826,49 @@ a {
 =>  Update Account
 ================================*/
 
+/* Responsive tweaks for auth forms (register/login) */
+@media (max-width: 700px) {
+  .layout__box {
+    position: static;
+    transform: none;
+    top: auto;
+    left: auto;
+    width: 95%;
+    max-width: 48rem;
+    margin: 2.4rem auto;
+    min-height: auto;
+    padding-bottom: 2.4rem;
+    box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.12);
+  }
+
+  .layout__body {
+    margin: 1.2rem;
+  }
+
+  .form__split {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .form__group input,
+  .form__group textarea,
+  .form__group select {
+    padding: 0.9rem;
+    font-size: 1.6rem;
+  }
+
+  .btn--main {
+    width: 100%;
+    padding: 1rem;
+  }
+
+  /* Allow the box to scroll if content is taller than viewport */
+  .layout__box {
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+}
+
 .update-account.layout .layout__box {
   max-width: 68rem;
 }
@@ -816,6 +885,15 @@ a {
 =>  Auth
 ================================*/
 
+.auth.layout {
+  min-height: calc(100vh - 15rem); /* Adjust based on your header height */
+  min-height: calc(100vh - 12rem);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
 .auth__tagline {
   text-align: center;
   margin-bottom: 3rem;
@@ -831,6 +909,55 @@ a {
 .auth__action {
   margin-top: 3rem;
   text-align: center;
+}
+
+/* Professional compact look for auth cards */
+.auth.layout .layout__box {
+  position: relative;
+  top: auto;
+  left: auto;
+  transform: none;
+  width: min(48rem, 95%);
+  margin: 0 auto;
+  padding: 1.6rem 1.8rem;
+  min-height: auto;
+  max-height: 90vh;
+  padding: 2.4rem;
+  min-height: 35rem;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  justify-content: flex-start;
+  overflow-y: auto;
+}
+
+.auth.layout .layout__boxHeader {
+  padding: 1rem 0.8rem;
+  padding: 1.5rem;
+  margin: -2.4rem -2.4rem 2rem -2.4rem;
+}
+
+.auth.layout .layout__body {
+  margin: 1.2rem 0.6rem;
+  padding-bottom: 0.6rem;
+  margin: 0;
+}
+
+.auth__tagline {
+  margin-bottom: 1.2rem;
+}
+
+@media (max-width: 700px) {
+  .auth.layout .layout__box {
+    padding: 1.2rem;
+    max-height: 85vh;
+    padding: 2rem;
+    min-height: auto;
+  }
+  .auth.layout .layout__body {
+    margin: 1rem;
+  }
 }
 
 /*==============================
@@ -900,7 +1027,8 @@ a {
 
 .room,
 .participants {
-  background: var(--color-dark);
+  background: #ffffff;
+  border: 1px solid var(--color-dark-medium);
   max-height: 87.5vh;
   border-radius: 0.7rem;
   overflow: hidden;
@@ -920,6 +1048,7 @@ a {
 .room__top,
 .participants__top {
   background: var(--color-dark-light);
+  background: var(--color-main);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -931,7 +1060,7 @@ a {
 .thread__top svg {
   width: 1.6rem;
   height: 1.6rem;
-  fill: var(--color-light);
+  fill: #ffffff;
   cursor: pointer;
 }
 
@@ -945,13 +1074,13 @@ a {
 .participants__top {
   text-transform: uppercase;
   font-weight: 500;
-  color: var(--color-light);
+  color: #ffffff;
 }
 
 .room__topLeft svg {
   width: 1.6rem;
   height: 1.6rem;
-  fill: var(--color-light);
+  fill: #ffffff;
 }
 
 .room__topRight {
@@ -968,7 +1097,7 @@ a {
   overflow-y: auto;
   position: absolute;
   width: 95%;
-  background: var(--color-dark);
+  background: #ffffff;
   z-index: 999;
   top: 4.4rem;
   padding-top: 2rem;
@@ -1033,7 +1162,7 @@ a {
 
 .room__topics {
   padding: 0.5rem 1.5rem;
-  background: var(--color-dark-light);
+  background: var(--color-main-light);
   color: var(--color-light);
   display: inline-block;
   font-size: 1.4rem;
@@ -1060,13 +1189,18 @@ a {
   height: 100%;
   margin-top: 28vh;
   padding: 0 2rem 4rem 2rem;
+  padding: 0 2rem 8rem 2rem;
 }
 
 .thread {
-  border-left: 2px solid var(--color-dark);
+  border-left: 2px solid var(--color-dark-light);
+  border-left: 2px solid var(--color-main-light);
   padding-left: 1rem;
   margin: 2rem 0;
   padding: 2rem;
+  padding: 1.5rem;
+  background: var(--color-dark);
+  border-radius: 0.5rem;
 }
 
 .thread__top {
