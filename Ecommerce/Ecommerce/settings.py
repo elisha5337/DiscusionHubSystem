@@ -145,14 +145,22 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 MEDIA_URL='/images/'
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
-]
+STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# Use WhiteNoise storage for serving static files in production
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# Configure Storages for Django 5.1+
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
+
+# Prevent 500 errors if a static file is missing from the manifest
+WHITENOISE_MANIFEST_STRICT = False
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -170,4 +178,4 @@ if USE_S3:
     AWS_S3_REGION_NAME = os.environ.get('AWS_S3_REGION_NAME', None)
     if not (AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY and AWS_STORAGE_BUCKET_NAME):
         raise RuntimeError('USE_S3 is True but AWS credentials or bucket name are not set')
-    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+    STORAGES["default"] = {"BACKEND": "storages.backends.s3boto3.S3Boto3Storage"}
