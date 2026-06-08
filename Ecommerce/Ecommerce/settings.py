@@ -14,6 +14,7 @@ from pathlib import Path
 
 import dj_database_url
 from dotenv import load_dotenv
+import logging
 
 # Load environment variables from .env when present
 load_dotenv()
@@ -32,18 +33,14 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'unsafe-local-dev-key')
 # Use DEBUG=False in production to enforce secure settings.
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.onrender.com']
-if os.environ.get('ALLOWED_HOSTS'):
-    ALLOWED_HOSTS.extend(os.environ.get('ALLOWED_HOSTS').split(','))
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
 
 # Automatically add Render's external hostname to allowed hosts
 RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
 if RENDER_EXTERNAL_HOSTNAME:
     ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
-CSRF_TRUSTED_ORIGINS = [f"https://{h}" for h in ALLOWED_HOSTS if h != '*']
-if RENDER_EXTERNAL_HOSTNAME:
-    CSRF_TRUSTED_ORIGINS.append(f"https://{RENDER_EXTERNAL_HOSTNAME}")
+CSRF_TRUSTED_ORIGINS = os.environ.get('CSRF_TRUSTED_ORIGINS', 'https://*.onrender.com').split(',')
 
 # Fail fast: require SECRET_KEY in production
 if not DEBUG and SECRET_KEY == 'unsafe-local-dev-key':
@@ -105,7 +102,7 @@ DATABASES = {
         conn_max_age=600,
         conn_health_checks=True,
         # Force SSL in production (Render requirement)
-        ssl_require=True if not DEBUG and os.environ.get('DATABASE_URL') else False
+        ssl_require=not DEBUG
     )
 }
 
@@ -159,13 +156,34 @@ STORAGES = {
         "BACKEND": "django.core.files.storage.FileSystemStorage",
     },
     "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
 }
 
 # Prevent 500 errors if a static file is missing from the manifest
 WHITENOISE_MANIFEST_STRICT = False
-WHITENOISE_USE_FINDERS = DEBUG
+WHITENOISE_USE_FINDERS = True
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
+}
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

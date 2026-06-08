@@ -1,3 +1,4 @@
+import logging
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.db.models import Q
@@ -7,6 +8,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Post, Topic, Message, Room
 from .forms import RoomForm,UserForm,User,MyUserCreationForm
 
+logger = logging.getLogger(__name__)
 
 def loginPage(request):
     page = 'login'
@@ -17,6 +19,7 @@ def loginPage(request):
         try:
             user = authenticate(request, username=email, password=password)
         except Exception as e:
+            logger.error(f"Authentication crash: {str(e)}", exc_info=True)
             messages.error(request, 'A server error occurred during authentication.')
             return redirect('login')
 
