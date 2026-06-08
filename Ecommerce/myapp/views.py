@@ -14,6 +14,10 @@ def loginPage(request):
         email = request.POST.get('email')
         password = request.POST.get('password')
 
+        if not email or not password:
+            messages.error(request, 'Please provide both email and password.')
+            return redirect('login')
+
         user = authenticate(request, username=email, password=password)
         if user is not None:
             login(request, user)

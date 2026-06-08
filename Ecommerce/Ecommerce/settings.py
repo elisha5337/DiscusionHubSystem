@@ -32,7 +32,9 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'unsafe-local-dev-key')
 # Use DEBUG=False in production to enforce secure settings.
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+if os.environ.get('ALLOWED_HOSTS'):
+    ALLOWED_HOSTS.extend(os.environ.get('ALLOWED_HOSTS').split(','))
 
 # Automatically add Render's external hostname to allowed hosts
 RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
@@ -101,7 +103,8 @@ DATABASES = {
     'default': dj_database_url.parse(
         os.environ.get('DATABASE_URL', f'sqlite:///{BASE_DIR / "db.sqlite3"}'),
         conn_max_age=600,
-        ssl_require=os.environ.get('DATABASE_SSL_REQUIRE', 'False') == 'True'
+        # Force SSL in production (Render requirement)
+        ssl_require=not DEBUG if os.environ.get('DATABASE_URL') else False
     )
 }
 
@@ -161,6 +164,7 @@ STORAGES = {
 
 # Prevent 500 errors if a static file is missing from the manifest
 WHITENOISE_MANIFEST_STRICT = False
+WHITENOISE_USE_FINDERS = True
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

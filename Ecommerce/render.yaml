@@ -1,6 +1,7 @@
 services:
   - type: web
     name: ecommerce-hub
+    plan: free
     env: python
     buildCommand: pip install -r requirements.txt && python manage.py migrate && python manage.py collectstatic --noinput
     startCommand: gunicorn Ecommerce.wsgi:application --workers 3 --bind 0.0.0.0:$PORT
