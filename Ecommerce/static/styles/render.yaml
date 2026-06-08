@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: ecommerce-hub
+    env: python
+    # We "cd" into the Ecommerce directory to run Django commands
+    buildCommand: cd Ecommerce && pip install -r requirements.txt && python manage.py migrate && python manage.py collectstatic --noinput
+    # We use the --pythonpath flag so gunicorn can find your Ecommerce module
+    startCommand: gunicorn --pythonpath Ecommerce Ecommerce.wsgi:application --workers 3 --bind 0.0.0.0:$PORT
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: ecommerce-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: "False"
+      - key: ALLOWED_HOSTS
+        value: "*"
+      - key: PYTHON_VERSION
+        value: 3.11.0
+
+databases:
+  - name: ecommerce-db
+    plan: free
